@@ -15,9 +15,20 @@ export class App extends Component {
     this.setState(prevState => ({ ...prevState, [type]: prevState[type] + 1 }));
   };
 
+  countTotalFeedback = () => {
+    const { good, neutral, bad } = this.state;
+    return good + neutral + bad;
+  };
+
+  countPositiveFeedbackPercentage = () => {
+    const { good } = this.state;
+    const totalFeedback = this.countTotalFeedback();
+    return ((good / totalFeedback) * 100).toFixed(0) || 0;
+  };
+
   render() {
     const { good, neutral, bad } = this.state;
-    const totalFeedback = good + neutral + bad;
+    const totalFeedback = this.countTotalFeedback();
     const showStatistics = totalFeedback > 0;
     const noFeedbackMessage = 'There is no feedback';
 
@@ -32,7 +43,13 @@ export class App extends Component {
 
         <Section title="Statistics">
           {showStatistics ? (
-            <Statistics good={good} neutral={neutral} bad={bad} />
+            <Statistics
+              good={good}
+              neutral={neutral}
+              bad={bad}
+              totalFeedback={totalFeedback}
+              positiveFeedbackPercentage={this.countPositiveFeedbackPercentage()}
+            />
           ) : (
             <Notification message={noFeedbackMessage} />
           )}
