@@ -1,39 +1,46 @@
-import React, { useState } from 'react'
-import { Statistics } from "./Statistics/Statistics";
-import { FeedbackOptions } from "./FeedbackOptions/FeedbackOptions";
-import { Section } from "./Section/Section";
-import { Notification } from "./Notification/Notification";
+import React, { Component } from 'react';
+import { Statistics } from './Statistics/Statistics';
+import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
+import { Section } from './Section/Section';
+import { Notification } from './Notification/Notification';
 
-export const App = () => {
+export class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      good: 0,
+      neutral: 0,
+      bad: 0,
+    };
+  }
 
-  const [state, setState] = useState({
-    good: 0,
-    neutral: 0,
-    bad: 0,
-  });
-
-  const handleFeedback = (type) => {
-    setState((prevState) => ({ ...prevState, [type]: prevState[type] + 1 }));
+  handleFeedback = type => {
+    this.setState(prevState => ({ ...prevState, [type]: prevState[type] + 1 }));
   };
 
-  const { good, neutral, bad } = state;
-  const totalFeedback = good + neutral + bad;
-  const showStatistics = totalFeedback > 0;
-  const noFeedbackMessage = "There is no feedback";
+  render() {
+    const { good, neutral, bad } = this.state;
+    const totalFeedback = good + neutral + bad;
+    const showStatistics = totalFeedback > 0;
+    const noFeedbackMessage = 'There is no feedback';
 
-  return (
-    <div>
-    <Section title="Leave your feedback">
-        <FeedbackOptions options={['good', 'neutral', 'bad']} onLeaveFeedback={handleFeedback} />
-      </Section>
+    return (
+      <div>
+        <Section title="Leave your feedback">
+          <FeedbackOptions
+            options={['good', 'neutral', 'bad']}
+            onLeaveFeedback={this.handleFeedback}
+          />
+        </Section>
 
-      <Section title="Statistics">
-        {showStatistics ? (
-          <Statistics good={good} neutral={neutral} bad={bad} />
-        ) : (
-          <Notification message= {noFeedbackMessage} />
-        )}
-      </Section>
-    </div>
-  );
-};
+        <Section title="Statistics">
+          {showStatistics ? (
+            <Statistics good={good} neutral={neutral} bad={bad} />
+          ) : (
+            <Notification message={noFeedbackMessage} />
+          )}
+        </Section>
+      </div>
+    );
+  }
+}
